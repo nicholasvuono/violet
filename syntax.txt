@@ -1,0 +1,30 @@
+import print, debug from io
+
+export hello_world(a int, b str) str
+    return "Hello World!"
+end
+
+equality() bool
+  imm name_one str = "violet"
+  imm name_two str = "violet"
+
+  if name_one == name_two
+    return true
+  else
+    return false
+  end
+end
+
+loops(length int)
+  for mut i = 0; i < length - 1; i++
+    print(i)
+  end
+end
+
+type Person struct
+  imm name str
+  imm age int
+  mut current_job func
+end
+
+
