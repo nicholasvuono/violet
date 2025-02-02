@@ -1,8 +1,7 @@
-import print, debug from io
+use print, debug from io
 
-export hello_world(a int, b str) str
+pub hello_world(a int, b str) str
     return "Hello World!"
-end
 
 equality() bool
   imm name_one str = "violet"
@@ -12,19 +11,14 @@ equality() bool
     return true
   else
     return false
-  end
-end
 
 loops(length int)
   for mut i = 0; i < length - 1; i++
     print(i)
-  end
-end
 
-type Person struct
-  imm name str
-  imm age int
-  mut current_job func
-end
+  mut counter int = 0
+  while counter < 10
+    print(counter)
+    counter++
 
 
