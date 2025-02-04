@@ -1,4 +1,5 @@
-const code = `imm name str = 'The cows car jumped over the moon!'`;
+const code = `imm name str = 'The cows car jumped over the moon!'
+mut age num = 29`;
 
 type VariableState = "imm" | "mut";
 
@@ -15,25 +16,31 @@ type Variable = {
 type Token = Variable | any;
 
 class Tokenizer {
-  input: any[];
+  input: any = [];
   tokens: Token[] = [];
 
   constructor(code: string) {
-    this.input = code.match(/(?:[^\s']+|'[^']*')+/g)!;
+    const lines = code.split("\n");
+    console.log(lines);
+    lines.forEach((value, index) => {
+      this.input[index] = value.match(/(?:[^\s']+|'[^']*')+/g)!;
+    });
     console.log(this.input);
   }
 
   tokenize() {
-    if (this.input[0] === "mut" || this.input[0] === "imm") {
-      const token: Variable = {
-        tokenType: "Variable",
-        state: this.input[0] as VariableState,
-        identifier: this.input[1],
-        type: this.input[2] as VariableType,
-        value: this.input[4],
-      };
-      this.tokens.push(token);
-    }
+    this.input.forEach((_: any, index: any) => {
+      if (this.input[index][0] === "mut" || this.input[index][0] === "imm") {
+        const token: Variable = {
+          tokenType: "Variable",
+          state: this.input[index][0] as VariableState,
+          identifier: this.input[index][1],
+          type: this.input[index][2] as VariableType,
+          value: this.input[index][4],
+        };
+        this.tokens.push(token);
+      }
+    });
   }
 }
 
@@ -59,7 +66,7 @@ class Transpiler {
           value: token.value,
         };
         this.typeScript.push(
-          `${temporary.state} ${temporary.identifier}: ${temporary.type} = ${temporary.value}`
+          `${temporary.state} ${temporary.identifier}: ${temporary.type} = ${temporary.value};`
         );
       }
     }
@@ -71,4 +78,4 @@ tokenizer.tokenize();
 console.log(tokenizer.tokens);
 const transpiler = new Transpiler(tokenizer.tokens);
 transpiler.ouput();
-console.log(JSON.stringify(transpiler.typeScript[0]));
+console.log(JSON.stringify(transpiler.typeScript));
