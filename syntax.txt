@@ -21,4 +21,13 @@ loops(length int)
     print(counter)
     counter++
 
+------------------------------------------
+
+func hello(name str) str
+  return "hello _name"
+end
+
+imm name str = "nick"
+
+print(hello(name))
 
