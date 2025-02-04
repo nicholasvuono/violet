@@ -37,9 +37,9 @@ class TokenStream {
   current: any = null;
   keywords: string[] = ["imm", "mut", "str"];
 
-  readonly input: string;
+  readonly input: any;
 
-  constructor(input: string) {
+  constructor(input: any) {
     this.input = input;
   }
 
@@ -63,8 +63,43 @@ class TokenStream {
     return " \t\n".indexOf(char) >= 0;
   }
 
-  // readWhile(predicate: string): string {
-  //   let str: string;
-  //   while(!this.input)
-  // }
+  readWhile(predicate: Function): string {
+    let str = "";
+    while (!this.input.eof() && predicate(this.input.peek()))
+      str += this.input.next();
+    return str;
+  }
+
+  readIdentifier(char: string): { type: string; value: string } {
+    var id = this.readWhile(this.isIdentifier);
+    return {
+      type: this.isKeyword(id) ? "keyword" : "identifier",
+      value: id,
+    };
+  }
+
+  readNext() {
+    this.readWhile(this.isWhitespace);
+    if (this.input.endOfFile()) return null;
+    const char = this.input.peek();
+    if (this.isStartOfIdentifier(char)) return this.readIdentifier(char);
+    if (this.isOperator(char))
+      return {
+        type: "op",
+        value: this.readWhile(this.isOperator),
+      };
+    this.input.croak("Can't handle character: " + char);
+  }
+
+  peek() {
+    return this.current || (this.current = this.readNext());
+  }
+  next() {
+    const token = this.current;
+    this.current = null;
+    return token || this.readNext();
+  }
+  endOfFile() {
+    return this.peek() == null;
+  }
 }
